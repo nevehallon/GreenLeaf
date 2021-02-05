@@ -1,15 +1,71 @@
+import Joi from "joi-browser";
 import React, { Component } from "react";
-import Input from "./input";
+import { Input } from "./";
 
 class Form extends Component {
-  state = {};
+  doSubmit() {
+    console.log("Submit successful");
+  }
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+
+    const errors = this.validate();
+
+    this.setState({ errors: errors || {} });
+
+    if (!errors) this.doSubmit();
+  };
+
+  validate = () => {
+    const {
+      state: { formData },
+      schema,
+    } = this;
+
+    const { error } = Joi.validate(formData, schema, {
+      abortEarly: false,
+    });
+
+    if (!error) return null;
+
+    const errors = {};
+
+    for (const { path, message } of error.details) {
+      errors[path[0]] = message;
+    }
+
+    return errors;
+  };
+
+  handleChange = ({ target: { value, name } }) => {
+    const updatedFormData = { ...this.state };
+    updatedFormData.formData[name] = value;
+    this.setState(updatedFormData);
+  };
 
   renderInput(name, label, type = "text") {
-    return <Input type={type} name={name} label={label} />;
+    const { formData, errors } = this.state;
+    return (
+      <Input
+        error={errors[name]}
+        onChange={this.handleChange}
+        type={type}
+        name={name}
+        label={label}
+        value={formData[name]}
+      />
+    );
   }
 
   renderButton(label = "") {
-    return <button className="btn btn-primary">{label}</button>;
+    return (
+      <div className="text-center">
+        <button disabled={this.validate()} className="btn btn-block btn-primary">
+          {label}
+        </button>
+      </div>
+    );
   }
 }
 
