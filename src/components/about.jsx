@@ -1,15 +1,11 @@
 import React from "react";
+import PageHeader from "../common/pageHeader";
 
 export const About = () => {
   return (
     <div className="container">
-      <div className="row">
-        <div className="col-12 mt4">
-          <h1>
-            About GreenLeaf <i className="fab fa-envira"></i> App
-          </h1>
-        </div>
-      </div>
+      <PageHeader titleText={`About GreenLeaf App`} />
+      {/*           ${(<i className="fab fa-envira"></i>)}  */}
       <div className="row">
         <div className="col-12">
           <p>
