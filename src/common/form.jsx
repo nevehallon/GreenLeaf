@@ -17,6 +17,14 @@ class Form extends Component {
     if (!errors) this.doSubmit();
   };
 
+  validateProperty = (name, value) => {
+    const schema = { [name]: this.schema[name] };
+    const obj = { [name]: value };
+
+    const { error } = Joi.validate(obj, schema);
+    return error ? error.details[0].message : null;
+  };
+
   validate = () => {
     const {
       state: { formData },
@@ -39,16 +47,31 @@ class Form extends Component {
   };
 
   handleChange = ({ target: { value, name } }) => {
-    const updatedFormData = { ...this.state };
-    updatedFormData.formData[name] = value;
-    this.setState(updatedFormData);
+    const { errors, formData } = this.state;
+
+    //validate input
+    const errorsCopy = { ...errors } || {};
+    const errorMessage = this.validateProperty(name, value);
+
+    // if (errorMessage) {
+    errorsCopy[name] = errorMessage;
+    // } else {
+    //   delete errorsCopy[name];
+    // }
+
+    //formData
+    const updatedFormData = { ...formData };
+    updatedFormData[name] = value;
+
+    // update state
+    this.setState({ formData: updatedFormData, errors: errorsCopy });
   };
 
   renderInput(name, label, type = "text") {
     const { formData, errors } = this.state;
     return (
       <Input
-        error={errors[name]}
+        error={errors && errors[name]}
         onChange={this.handleChange}
         type={type}
         name={name}
