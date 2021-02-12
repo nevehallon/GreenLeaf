@@ -1,14 +1,11 @@
-import React from "react";
-import { PageHeader, Form } from "../common";
 import Joi from "joi-browser";
-import httpService from "../services/httpService";
-import { apiUrl } from "../config.json";
+import { PageHeader, Form } from "../common";
 import { toast } from "react-toastify";
+import userService from "../services/userService";
 
-class Signup extends Form {
+class Signin extends Form {
   state = {
     formData: {
-      name: "",
       password: "",
       email: "",
     },
@@ -16,22 +13,22 @@ class Signup extends Form {
   };
 
   schema = {
-    email: Joi.string().required().email().min(5),
-    password: Joi.string().required().min(6),
-    name: Joi.string().required().min(2),
+    email: Joi.string().required().email().min(5).label("Email"),
+    password: Joi.string().required().min(6).label("Password"),
   };
 
-  async doSubmit() {
+  componentDidMount() {
+    localStorage.clear();
+  }
+
+  doSubmit = async () => {
     let { errors, formData } = this.state;
-    const body = { ...formData, biz: false };
 
     try {
-      await httpService.post(`${apiUrl}/users`, body);
-      this.props.history.replace("/sign-in");
-      toast.success("You have successfully signed up!!", {
-        position: "top-center",
-        autoClose: 4000,
-      });
+      await userService.login(formData);
+      setTimeout(() => {
+        window.location = "/";
+      }, 2200);
     } catch (error) {
       if (error.response && error.response.status === 400) {
         toast.error(error.response.data, {
@@ -44,12 +41,12 @@ class Signup extends Form {
         this.setState({ errors, formData });
       }
     }
-  }
+  };
 
   render() {
     return (
       <div className="container">
-        <PageHeader titleText={"Signup for GreenLeaf App"} />
+        <PageHeader titleText={"Sign in with your GreenLeaf account"} />
         <div className="row text-center">
           <div className="col-12">
             <p>You can open a new account for free</p>
@@ -60,8 +57,7 @@ class Signup extends Form {
             <form onSubmit={this.handleSubmit} noValidate>
               {this.renderInput("email", "Email", "email")}
               {this.renderInput("password", "Password", "password")}
-              {this.renderInput("name", "Name")}
-              {this.renderButton("Sign Up")}
+              {this.renderButton("Sign In")}
             </form>
           </div>
         </div>
@@ -70,4 +66,4 @@ class Signup extends Form {
   }
 }
 
-export default Signup;
+export default Signin;
