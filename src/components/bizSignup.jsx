@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import userService from "../services/userService";
 import { Redirect } from "react-router-dom";
 
-class Signup extends Form {
+class BizSignup extends Form {
   state = {
     formData: {
       name: "",
@@ -25,15 +25,22 @@ class Signup extends Form {
 
   async doSubmit() {
     let { errors, formData } = this.state;
-    const body = { ...formData, biz: false };
+    const body = { ...formData, biz: true };
 
     try {
       await httpService.post(`${apiUrl}/users`, body);
-      this.props.history.replace("/sign-in");
-      toast.success("You have successfully signed up!!", {
+
+      const { email, password } = body;
+      await userService.login({ email, password });
+
+      toast.success("You have successfully registered business account!!", {
         position: "top-center",
-        autoClose: 4000,
+        autoClose: 2500,
       });
+
+      setTimeout(() => {
+        window.location = "/create-card";
+      }, 2500);
     } catch (error) {
       if (error.response && error.response.status === 400) {
         toast.error(error.response.data, {
@@ -55,10 +62,10 @@ class Signup extends Form {
 
     return (
       <div className="container">
-        <PageHeader titleText={"Signup for GreenLeaf App"} />
+        <PageHeader titleText={"Business Registration Form"} />
         <div className="row text-center">
           <div className="col-12">
-            <p>You can open a new account for free</p>
+            <p>Open a new business account</p>
           </div>
         </div>
         <div className="row">
@@ -67,7 +74,7 @@ class Signup extends Form {
               {this.renderInput("email", "Email", "email")}
               {this.renderInput("password", "Password", "password")}
               {this.renderInput("name", "Name")}
-              {this.renderButton("Sign Up")}
+              {this.renderButton("Next")}
             </form>
           </div>
         </div>
@@ -76,4 +83,4 @@ class Signup extends Form {
   }
 }
 
-export default Signup;
+export default BizSignup;

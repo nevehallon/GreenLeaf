@@ -2,6 +2,7 @@ import Joi from "joi-browser";
 import { PageHeader, Form } from "../common";
 import { toast } from "react-toastify";
 import userService from "../services/userService";
+import { Redirect } from "react-router-dom";
 
 class Signin extends Form {
   state = {
@@ -18,6 +19,7 @@ class Signin extends Form {
   };
 
   componentDidMount() {
+    if (userService.getCurrentUser()) return;
     localStorage.clear();
   }
 
@@ -44,6 +46,10 @@ class Signin extends Form {
   };
 
   render() {
+    if (userService.getCurrentUser()) {
+      return <Redirect to="/" />;
+    }
+
     return (
       <div className="container">
         <PageHeader titleText={"Sign in with your GreenLeaf account"} />

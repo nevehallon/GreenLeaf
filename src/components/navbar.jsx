@@ -32,11 +32,20 @@ export const Navbar = ({ user }) => {
                 About
               </NavLink>
             </li>
-            <li className="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
-              <NavLink className="nav-link" to="/my-cards">
-                My Cards
-              </NavLink>
-            </li>
+            {user && (
+              <>
+                <li className="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
+                  <NavLink className="nav-link" to="/create-card">
+                    Create Card
+                  </NavLink>
+                </li>
+                <li className="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
+                  <NavLink className="nav-link" to="/my-cards">
+                    My Cards
+                  </NavLink>
+                </li>
+              </>
+            )}
           </ul>
           <ul className="navbar-nav ml-auto">
             {!user && (
@@ -49,6 +58,11 @@ export const Navbar = ({ user }) => {
                 <li className="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
                   <NavLink className="nav-link" to="/sign-up">
                     Sign Up
+                  </NavLink>
+                </li>
+                <li className="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
+                  <NavLink className="nav-link" to="/biz-sign-up">
+                    Create Business Account
                   </NavLink>
                 </li>
               </>

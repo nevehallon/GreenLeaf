@@ -4,7 +4,7 @@ import { Input } from "./";
 
 class Form extends Component {
   doSubmit() {
-    console.log("Submit successful");
+    console.log("Submit successful from form component!");
   }
 
   handleSubmit = (e) => {
